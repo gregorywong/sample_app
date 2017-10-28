@@ -12,4 +12,17 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     end
     assert_template 'users/new'
   end
+
+  test "empty name" do
+    get signup_path
+    post users_path, params: { user: { name:  "",
+                                       email: "",
+                                       password:              "foo",
+                                       password_confirmation: "bar" } }
+    assert_select "div#error_explanation li", "Name can't be blank"
+    assert_select "div#error_explanation li", "Email can't be blank"
+    assert_select "div#error_explanation li", "Email is invalid"
+    assert_select "div#error_explanation li", "Password confirmation doesn't match Password"
+    assert_select "div#error_explanation li", "Password is too short (minimum is 6 characters)"
+  end
 end
